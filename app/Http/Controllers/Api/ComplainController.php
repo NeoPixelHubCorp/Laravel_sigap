@@ -41,6 +41,11 @@ class ComplainController extends Controller
             'tanggal_aduan' => 'nullable|date',
         ])->validate();
 
+        $userId = auth()->id();
+        if (!$userId) {
+        return response()->json(['message' => 'User is not authenticated'], 401);
+        }
+
         // Mengupload gambar jika ada
         $imagePath = null;
         if ($request->hasFile('image')) {

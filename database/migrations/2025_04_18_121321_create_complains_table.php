@@ -33,6 +33,7 @@ return new class extends Migration
             $table->enum('visibility', ['public', 'private'])->default('private');
             // Tambahan opsional
             $table->date('tanggal_aduan')->nullable();
+            // $table->timestamp('tanggal_aduan')->nullable()->useCurrent(); udah di ubah
             $table->timestamps();
         });
     }

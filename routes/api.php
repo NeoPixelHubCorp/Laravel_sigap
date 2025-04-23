@@ -1,12 +1,12 @@
 <?php
-
 use App\Http\Controllers\Api\AppRatingController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ComplainController;
 use App\Http\Controllers\Api\ComplainRatingController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ResponseController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Route untuk user (untuk yang sudah login, menggunakan Sanctum)
@@ -21,7 +21,8 @@ Route::post('login', [AuthController::class, 'login']);  // Login
 // Route yang memerlukan autentikasi (untuk yang sudah login)
 Route::middleware('auth:sanctum')->group(function () {
     // Route untuk Profile dan Logout
-    Route::get('profile', [AuthController::class, 'profile']);  // Mendapatkan profil user
+    Route::get('profile', [ProfileController::class, 'show']);  // Menampilkan profil user
+    Route::post('profile', [ProfileController::class, 'update']);  // Mengupdate profil user
     Route::post('logout', [AuthController::class, 'logout']);  // Logout user
 
     // Route untuk resource AppRating
@@ -34,4 +35,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('complain-ratings', ComplainRatingController::class);  // CRUD ComplainRating
     // Route untuk resource Response
     Route::apiResource('responses', ResponseController::class);  // CRUD Response
+    // Route untuk resource Response
+    Route::apiResource('comments', CommentController::class);  // CRUD Comments
 });

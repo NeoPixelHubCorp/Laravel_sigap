@@ -76,10 +76,7 @@ class AuthController extends Controller
     /**
      * Get authenticated user profile
      */
-    public function profile(Request $request)
-    {
-        return response()->json($request->user());
-    }
+    
 
     /**
      * Logout and revoke the user's token
