@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\AppRating;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -13,47 +14,28 @@ class AppRatingSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('app_ratings')->insert([
-            [
-                'user_id' => 4,
-                'app_rating' => 5,
-                'app_feedback' => 'hmm bagus',
-                'version' => 'v1.03',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'user_id' => 1,
-                'app_rating' => 4,
-                'app_feedback' => null,
-                'version' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'user_id' => 1,
-                'app_rating' => 1,
-                'app_feedback' => 'Tiap buka selalu force close. Tolong diperbaiki secepatnya.',
-                'version' => 'v1.5.0',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'user_id' => 1,
-                'app_rating' => 3,
-                'app_feedback' => 'Lumayan. Ada beberapa fitur yang belum jalan tapi overall oke.',
-                'version' => 'v1.8.1',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'user_id' => 1,
-                'app_rating' => 5,
-                'app_feedback' => 'Aplikasinya sangat membantu dan user-friendly. Good job!',
-                'version' => 'v1.2.3',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        // Ambil semua pengguna dari tabel users
+        $users = \App\Models\User::all();
+
+        // Feedback yang akan digunakan secara acak
+        $feedbacks = [
+            'Aplikasi sangat membantu! Terima kasih!',
+            'Kurang menarik, mungkin ada fitur tambahan.',
+            'Rating 4 karena aplikasi berjalan lancar tapi ada beberapa bug.',
+            'Sangat suka! Semoga semakin berkembang.',
+            'Aplikasi cukup oke, tapi saya berharap ada pembaruan fitur.',
+            'Terlalu sering crash, tidak nyaman digunakan.',
+            'Aplikasi bagus, mudah digunakan.',
+            'Lumayan, masih banyak yang perlu ditingkatkan.',
+        ];
+
+        // Mengisi rating dan feedback untuk setiap user
+        foreach ($users as $user) {
+            AppRating::create([
+                'user_id' => $user->id,                   // ID user dari seeder UserSeeder
+                'app_rating' => rand(1, 5),               // Rating acak dari 1 sampai 5
+                'app_feedback' => $feedbacks[array_rand($feedbacks)], // Feedback acak dari array
+            ]);
+        }
     }
 }

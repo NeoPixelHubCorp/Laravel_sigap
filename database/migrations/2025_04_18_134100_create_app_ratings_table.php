@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->integer('app_rating');
             $table->longText('app_feedback')->nullable();
-            $table->string('version')->nullable();
             $table->timestamps();
         });
     }

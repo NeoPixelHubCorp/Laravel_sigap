@@ -2,11 +2,9 @@
 use App\Http\Controllers\Api\AppRatingController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ComplainController;
-use App\Http\Controllers\Api\ComplainRatingController;
-use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ResponseController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Route untuk user (untuk yang sudah login, menggunakan Sanctum)
@@ -18,23 +16,14 @@ Route::get('/user', function (Request $request) {
 Route::post('register', [AuthController::class, 'register']);  // Register
 Route::post('login', [AuthController::class, 'login']);  // Login
 
-// Route yang memerlukan autentikasi (untuk yang sudah login)
+// Route untuk yang sudah login
 Route::middleware('auth:sanctum')->group(function () {
-    // Route untuk Profile dan Logout
-    Route::get('profile', [ProfileController::class, 'show']);  // Menampilkan profil user
-    Route::post('profile', [ProfileController::class, 'update']);  // Mengupdate profil user
-    Route::post('logout', [AuthController::class, 'logout']);  // Logout user
-
-    // Route untuk resource AppRating
-    Route::apiResource('app-ratings', AppRatingController::class);  // CRUD AppRating
-    // Route untuk resource Category
-    Route::apiResource('categories', CategoryController::class);  // CRUD Category
-    // Route untuk resource Complain
-    Route::apiResource('complains', ComplainController::class);  // CRUD Complain
-    // Route untuk resource ComplainRating
-    Route::apiResource('complain-ratings', ComplainRatingController::class);  // CRUD ComplainRating
-    // Route untuk resource Response
-    Route::apiResource('responses', ResponseController::class);  // CRUD Response
-    // Route untuk resource Response
-    Route::apiResource('comments', CommentController::class);  // CRUD Comments
+    Route::post('logout', [AuthController::class, 'logout']);
+    //bagian fitur
+    Route::post('/app-rating', [AppRatingController::class, 'store']); //rating tambah
+    Route::apiResource('/complains',ComplainController::class); //aduan CRUD
+    Route::put('/profile', [UserController::class, 'update']); //profile U
+    Route::get('/profile', [UserController::class, 'profile']); //profile U
+    Route::get('/responses/by-complain/{complainId}', [ResponseController::class, 'getResponseByComplain']);// respon admin R
+    Route::get('/categories', [CategoryController::class, 'index']);// Categories R
 });

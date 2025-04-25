@@ -38,18 +38,6 @@ class UserSeeder extends Seeder
                 'role'=>'user',
                 'password'=>bcrypt('123456')
             ),
-            array(
-                'name'=>'Agent Pai',
-                'email'=>'AgentPai@gmail.com',
-                'role'=>'agent',
-                'password'=>bcrypt('123456')
-            ),
-            array(
-                'name'=>'Agent Lika',
-                'email'=>'AgentLika@gmail.com',
-                'role'=>'agent',
-                'password'=>bcrypt('123456')
-            ),
             ));
     }
 }

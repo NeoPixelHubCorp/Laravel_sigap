@@ -13,11 +13,7 @@ class AppRatingController extends Controller
      */
     public function index()
     {
-        $ratings = AppRating::with('user')->latest()->get();
-        return response()->json([
-            'success' => true,
-            'data' => $ratings
-        ]);
+
     }
 
     /**
@@ -25,24 +21,21 @@ class AppRatingController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'app_rating' => 'required|integer|min:1|max:5',
+        $validated = $request->validate([
+            'app_rating'   => 'required|integer|min:1|max:5',
             'app_feedback' => 'nullable|string',
-            'version' => 'nullable|string|max:20',
         ]);
 
         $rating = AppRating::create([
-            'user_id' => auth()->id(),
-            'app_rating' => $request->app_rating,
-            'app_feedback' => $request->app_feedback,
-            'version' => $request->version,
+            'user_id'      => $request->user()->id,
+            'app_rating'   => $validated['app_rating'],
+            'app_feedback' => $validated['app_feedback'] ?? null,
         ]);
 
         return response()->json([
-            'success' => true,
-            'message' => 'Thank you for rating our app! 🥰',
-            'data' => $rating
-        ]);
+            'message' => 'Terima kasih sudah memberi rating dan feedback!',
+            'data'    => $rating,
+        ], 201);
     }
 
     /**
@@ -50,12 +43,7 @@ class AppRatingController extends Controller
      */
     public function show(string $id)
     {
-        $rating = AppRating::with('user')->findOrFail($id);
 
-        return response()->json([
-            'success' => true,
-            'data' => $rating
-        ]);
     }
 
     /**
@@ -63,21 +51,7 @@ class AppRatingController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $rating = AppRating::findOrFail($id);
 
-        $request->validate([
-            'app_rating' => 'sometimes|integer|min:1|max:5',
-            'app_feedback' => 'nullable|string',
-            'version' => 'nullable|string|max:20',
-        ]);
-
-        $rating->update($request->only('app_rating', 'app_feedback', 'version'));
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Rating updated successfully.',
-            'data' => $rating
-        ]);
     }
 
     /**
@@ -85,12 +59,6 @@ class AppRatingController extends Controller
      */
     public function destroy(string $id)
     {
-        $rating = AppRating::findOrFail($id);
-        $rating->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Rating deleted successfully.'
-        ]);
     }
 }

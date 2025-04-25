@@ -64,11 +64,13 @@ class AdminPanelProvider extends PanelProvider
     public function boot()
     {
         FilamentColor::register([
-            'pending' => Color::hex('#6B7280'),
-            'diverifikasi' => Color::hex('#F59E0B'),
-            'diteruskan' => Color::hex('#3B82F6'),
-            'dalam_penanganan' => Color::hex('#FB923C'),
-            'selesai' => Color::hex('#10B981'),
-        ]);
+        'pending'                => Color::hex('#6B7280'),
+        'diverifikasi'           => Color::hex('#F59E0B'),
+        'diteruskan_ke_instansi' => Color::hex('#3B82F6'),
+        'dalam_penanganan'       => Color::hex('#FB923C'),
+        'selesai'                => Color::hex('#10B981'),
+        'ditolak'                => Color::hex('#EF4444'), 
+    ]);
+
     }
 }

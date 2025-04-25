@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('category');
-            $table->string('slug'); //Slug adalah buat nandain pas kita pindah halaman jadi kalau slug di web berita itu ngambilnya dari name biasanya
+            $table->string('name');
             $table->timestamps();
         });
     }

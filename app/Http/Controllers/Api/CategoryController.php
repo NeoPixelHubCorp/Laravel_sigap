@@ -26,22 +26,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi data
-        $validated = $request->validate([
-            'category' => 'required|string|max:255',
-            'slug' => 'required|string|unique:categories,slug|max:255',
-        ]);
 
-        // Membuat kategori baru
-        $category = Category::create([
-            'category' => $validated['category'],
-            'slug' => $validated['slug'],
-        ]);
-
-        return response()->json([
-            'message' => 'Category created successfully',
-            'category' => $category
-        ], 201);
     }
 
     /**
@@ -49,18 +34,7 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        // Cari kategori berdasarkan ID
-        $category = Category::find($id);
 
-        if (!$category) {
-            return response()->json([
-                'message' => 'Category not found'
-            ], 404);
-        }
-
-        return response()->json([
-            'category' => $category
-        ], 200);
     }
 
     /**
@@ -68,30 +42,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Validasi data
-        $validated = $request->validate([
-            'category' => 'required|string|max:255',
-            'slug' => 'required|string|unique:categories,slug,' . $id . '|max:255',
-        ]);
 
-        // Cari kategori berdasarkan ID
-        $category = Category::find($id);
-
-        if (!$category) {
-            return response()->json([
-                'message' => 'Category not found'
-            ], 404);
-        }
-
-        // Update kategori
-        $category->category = $validated['category'];
-        $category->slug = $validated['slug'];
-        $category->save();
-
-        return response()->json([
-            'message' => 'Category updated successfully',
-            'category' => $category
-        ], 200);
     }
 
     /**
@@ -99,20 +50,6 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        // Cari kategori berdasarkan ID
-        $category = Category::find($id);
-
-        if (!$category) {
-            return response()->json([
-                'message' => 'Category not found'
-            ], 404);
-        }
-
-        // Hapus kategori
-        $category->delete();
-
-        return response()->json([
-            'message' => 'Category deleted successfully'
-        ], 200);
+        
     }
 }

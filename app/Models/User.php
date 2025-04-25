@@ -51,20 +51,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function isAdmin(): bool
-    {
-        return $this->role === 'admin';
-    }
 
-    public function isAgent(): bool
-    {
-        return $this->role === 'agent';
-    }
 
-    public function isUser(): bool
-    {
-        return $this->role === 'user';
-    }
 
     // Tambahan relasi (jika kamu nanti butuh)
     public function complains()
@@ -81,9 +69,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Response::class, 'updated_by');
     }
-
-    public function handledResponses()
+    public function appRatings()
     {
-        return $this->hasMany(Response::class, 'handled_by');
+        return $this->hasMany(AppRating::class, 'user_id');
     }
+
+
 }

@@ -13,27 +13,25 @@ return new class extends Migration
     {
     Schema::create('complains', function (Blueprint $table) {
             $table->id();
-            // Relasi
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
-            // Data utama
-            $table->string('no_aduan')->unique();
+            $table->string('no_aduan')->nullable()->unique();
             $table->string('title');
             $table->text('description');
             $table->string('image')->nullable();
-            $table->string('location');
-            // Status dan akses
+            $table->decimal('latitude', 10, 8);
+            $table->decimal('longitude', 11, 8);
+            $table->string('address')->nullable();
+            $table->string('city')->nullable();
+            $table->string('district')->nullable();
             $table->enum('status', [
                 'pending',
                 'diverifikasi',
                 'diteruskan_ke_instansi',
                 'dalam_penanganan',
-                'selesai'
+                'selesai',
+                'ditolak'
             ])->default('pending');
-            $table->enum('visibility', ['public', 'private'])->default('private');
-            // Tambahan opsional
-            $table->date('tanggal_aduan')->nullable();
-            // $table->timestamp('tanggal_aduan')->nullable()->useCurrent(); udah di ubah
             $table->timestamps();
         });
     }

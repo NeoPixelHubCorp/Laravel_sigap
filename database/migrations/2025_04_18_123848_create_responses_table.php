@@ -13,20 +13,10 @@ return new class extends Migration
     {
         Schema::create('responses', function (Blueprint $table) {
     $table->id();
-
-    // Relasi ke complain
-    $table->foreignId('complain_id')->constrained('complains')->onDelete('cascade');
-
-    // Admin yang memberi respon
     $table->foreignId('admin_id')->constrained('users')->onDelete('cascade');
-
-    // Isi respon
+    $table->foreignId('complain_id')->constrained('complains')->onDelete('cascade');
     $table->longText('response')->nullable();
-
-    // Optional: siapa yang update atau handle
     $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
-    $table->foreignId('handled_by')->nullable()->constrained('users')->onDelete('set null');
-
     $table->timestamps();
 });
 

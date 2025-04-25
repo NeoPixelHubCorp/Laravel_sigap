@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
+use App\Models\Complain;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -11,109 +13,77 @@ class ComplainSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+public function run()
     {
-        $now = now();
+        $categories = Category::all(); // Mengambil semua kategori yang sudah ada
 
-        DB::table('complains')->insert([
+        $complains = [
             [
-                'user_id' => 1,
-                'category_id' => 1,
-                'no_aduan' => 'ADUAN-68031EB223B59',
-                'title' => 'Lampu Jalan Rusak di Taman Kota',
-                'description' => 'Lampu jalan di taman kota sudah lama mati dan membahayakan pengguna jalan.',
-                'image' => null,
-                'location' => 'Taman Kota, Jalan Raya No. 12',
-                'status' => 'pending',
-                'visibility' => 'private',
-                'tanggal_aduan' => $now,
-                'created_at' => $now,
-                'updated_at' => $now,
+                'title'       => 'Kerusakan Jalan Raya',
+                'description' => 'Jalan raya utama di daerah kami rusak parah dan sering menyebabkan kecelakaan.',
+                'image'       => null,
+                'latitude'    => -6.2088,
+                'longitude'   => 106.8456,
+                'address'     => 'Jl. Raya No. 1, Jakarta',
+                'city'        => 'Jakarta',
+                'district'    => 'Central Jakarta',
+                'category_id' => $categories->where('name', 'Infrastruktur')->first()->id,
+                'user_id'     => 1,
             ],
             [
-                'user_id' => 1,
-                'category_id' => 2,
-                'no_aduan' => 'ADUAN-68031FD041C13',
-                'title' => 'Sampah Berserakan di Taman Kota',
-                'description' => 'Tumpukan sampah semakin parah dan menimbulkan bau tidak sedap.',
-                'image' => null,
-                'location' => 'Taman Kota, Blok C',
-                'status' => 'dalam_penanganan',
-                'visibility' => 'private',
-                'tanggal_aduan' => $now,
-                'created_at' => $now,
-                'updated_at' => $now,
+                'title'       => 'Pelayanan Kesehatan Tidak Memadai',
+                'description' => 'Fasilitas kesehatan di daerah kami kekurangan tenaga medis dan peralatan.',
+                'image'       => null,
+                'latitude'    => -6.2210,
+                'longitude'   => 106.8440,
+                'address'     => 'Jl. Sehat No. 3, Jakarta',
+                'city'        => 'Jakarta',
+                'district'    => 'East Jakarta',
+                'category_id' => $categories->where('name', 'Kesehatan')->first()->id,
+                'user_id'     => 1,
             ],
             [
-                'user_id' => 1,
-                'category_id' => 3,
-                'no_aduan' => 'ADUAN-68031FDE8D3E1',
-                'title' => 'Sampah Menumpuk di Tepi Sungai',
-                'description' => 'Sampah plastik menumpuk di sepanjang tepi sungai, mengganggu pemandangan dan lingkungan.',
-                'image' => null,
-                'location' => 'Sungai Cisadane, Kelurahan Ciledug',
-                'status' => 'selesai',
-                'visibility' => 'private',
-                'tanggal_aduan' => $now,
-                'created_at' => $now,
-                'updated_at' => $now,
+                'title'       => 'Sampah Tidak Terkelola dengan Baik',
+                'description' => 'Setiap hari, sampah menumpuk di sepanjang jalan dan tidak ada petugas yang membersihkan.',
+                'image'       => null,
+                'latitude'    => -6.2083,
+                'longitude'   => 106.8412,
+                'address'     => 'Jl. Bersih No. 5, Jakarta',
+                'city'        => 'Jakarta',
+                'district'    => 'West Jakarta',
+                'category_id' => $categories->where('name', 'Sampah & Kebersihan')->first()->id,
+                'user_id'     => 2,
             ],
             [
-                'user_id' => 1,
-                'category_id' => 4,
-                'no_aduan' => 'ADUAN-68031FEC3C141',
-                'title' => 'Antrian Panjang di Kantor Pelayanan Publik',
-                'description' => 'Proses layanan yang sangat lambat di kantor pelayanan publik menyebabkan antrian panjang dan ketidaknyamanan warga.',
-                'image' => null,
-                'location' => 'Kantor Pelayanan Publik, Jalan Raya No. 45',
-                'status' => 'diverifikasi',
-                'visibility' => 'private',
-                'tanggal_aduan' => $now,
-                'created_at' => $now,
-                'updated_at' => $now,
+                'title'       => 'Pemadaman Listrik Berkepanjangan',
+                'description' => 'Sering terjadi pemadaman listrik di wilayah kami tanpa pemberitahuan yang jelas.',
+                'image'       => null,
+                'latitude'    => -6.2140,
+                'longitude'   => 106.8450,
+                'address'     => 'Jl. Energi No. 4, Jakarta',
+                'city'        => 'Jakarta',
+                'district'    => 'South Jakarta',
+                'category_id' => $categories->where('name', 'Pemadaman Listrik')->first()->id,
+                'user_id'     => 3,
             ],
             [
-                'user_id' => 1,
-                'category_id' => 5,
-                'no_aduan' => 'ADUAN-68031FF95F174',
-                'title' => 'Pelanggaran Lalu Lintas di Jalan Raya No. 10',
-                'description' => 'Pengendara motor melanggar rambu lalu lintas dan berjalan melawan arah, membahayakan keselamatan pengguna jalan lainnya.',
-                'image' => null,
-                'location' => 'Jalan Raya No. 10, Kota Baru',
-                'status' => 'diteruskan_ke_instansi',
-                'visibility' => 'public',
-                'tanggal_aduan' => $now,
-                'created_at' => $now,
-                'updated_at' => $now,
+                'title'       => 'Kualitas Udara yang Buruk',
+                'description' => 'Kualitas udara di daerah kami buruk dan sering menyebabkan gangguan pernapasan.',
+                'image'       => null,
+                'latitude'    => -6.1990,
+                'longitude'   => 106.8540,
+                'address'     => 'Jl. Alam No. 6, Jakarta',
+                'city'        => 'Jakarta',
+                'district'    => 'North Jakarta',
+                'category_id' => $categories->where('name', 'Lingkungan')->first()->id,
+                'user_id'     => 2,
             ],
-            [
-                'user_id' => 1,
-                'category_id' => 1,
-                'no_aduan' => 'ADUAN-6804C17F9F58E',
-                'title' => 'Kebocoran Pipa Air di Jalan Raya',
-                'description' => 'Terjadi kebocoran pipa air di sepanjang jalan raya, menyebabkan gangguan aliran air di sekitar kawasan tersebut.',
-                'image' => '01JS997PM9DP6N370TEE0R3PPP.jpeg',
-                'location' => 'Jalan Raya No. 45, Kelurahan A',
-                'status' => 'diteruskan_ke_instansi',
-                'visibility' => 'private',
-                'tanggal_aduan' => $now,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ],
-            [
-                'user_id' => 1,
-                'category_id' => 5,
-                'no_aduan' => 'ADUAN-6804C6DA1B4AC',
-                'title' => 'Pengendara Motor Melawan Arah di Jalan Raya',
-                'description' => 'Seorang pengendara motor melawan arah di jalan raya, hampir menabrak mobil yang melintas.',
-                'image' => '01JS9AHGZGB4GV8R23ZQW68CZY.jpeg',
-                'location' => 'Jalan Raya No. 13, Kelurahan C',
-                'status' => 'dalam_penanganan',
-                'visibility' => 'private',
-                'tanggal_aduan' => $now,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ],
-        ]);
+        ];
+
+        // Insert semua data complain menggunakan Eloquent
+        foreach ($complains as $complain) {
+            Complain::create($complain);
+        }
     }
 }
+

@@ -7,6 +7,7 @@ use App\Models\Complain;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ComplainController extends Controller
@@ -16,152 +17,105 @@ class ComplainController extends Controller
      */
     public function index()
     {
-        // Mengambil semua aduan yang ada
-        $complains = Complain::with(['user', 'category'])->get();
 
-        return response()->json([
-            'complains' => $complains
-        ], 200);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+public function store(Request $request)
     {
-        // Validasi data
-        $validated = Validator::make($request->all(), [
-            'category_id' => 'required|exists:categories,id',
-            'title' => 'required|string|max:255',
+        $validated = $request->validate([
+            'title'       => 'required|string|max:255',
             'description' => 'required|string',
-            'location' => 'required|string|max:255',
-            'status' => 'in:pending,diverifikasi,diteruskan_ke_instansi,dalam_penanganan,selesai',
-            'visibility' => 'in:public,private',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'tanggal_aduan' => 'nullable|date',
-        ])->validate();
-
-        $userId = auth()->id();
-        if (!$userId) {
-        return response()->json(['message' => 'User is not authenticated'], 401);
-        }
-
-        // Mengupload gambar jika ada
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('complains', 'public');
-        }
-
-        // Membuat aduan baru
-        $complain = Complain::create([
-            'user_id' => auth()->id(), // Menggunakan ID user yang login
-            'category_id' => $validated['category_id'],
-            'no_aduan' => 'ADUAN-' . strtoupper(uniqid()),
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'image' => $imagePath,
-            'location' => $validated['location'],
-            'status' => $validated['status'] ?? 'pending',
-            'visibility' => $validated['visibility'] ?? 'private',
-            'tanggal_aduan' => $validated['tanggal_aduan'],
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'latitude'    => 'required|numeric',
+            'longitude'   => 'required|numeric',
+            'address'     => 'nullable|string',
+            'city'        => 'nullable|string',
+            'district'    => 'nullable|string',
+            'category_id' => 'required|exists:categories,id',
         ]);
 
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('complains', 'public');
+        }
+
+        $complain = Complain::create($validated);
+
         return response()->json([
-            'message' => 'Complain created successfully',
-            'complain' => $complain
+            'message' => 'Aduan berhasil dibuat',
+            'data' => $complain,
         ], 201);
     }
+
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    // melihat semua aduan yang di buat oleh user yang login
+    public function userComplains()
     {
-        // Cari aduan berdasarkan ID
-        $complain = Complain::with(['user', 'category'])->find($id);
+        $complains = Complain::where('user_id', auth()->id())->get();
 
-        if (!$complain) {
-            return response()->json([
-                'message' => 'Complain not found'
-            ], 404);
-        }
-
-        return response()->json([
-            'complain' => $complain
-        ], 200);
+        return response()->json(['data' => $complains]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+public function update(Request $request, $id)
     {
-        // Validasi data
-        $validated = Validator::make($request->all(), [
-            'category_id' => 'sometimes|required|exists:categories,id',
-            'title' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|required|string',
-            'location' => 'sometimes|required|string|max:255',
-            'status' => 'sometimes|in:pending,diverifikasi,diteruskan_ke_instansi,dalam_penanganan,selesai',
-            'visibility' => 'sometimes|in:public,private',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'tanggal_aduan' => 'nullable|date',
-        ])->validate();
+        $complain = Complain::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
 
-        // Cari aduan berdasarkan ID
-        $complain = Complain::find($id);
+        $validated = $request->validate([
+            'title'       => 'sometimes|string|max:255',
+            'description' => 'sometimes|string',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'latitude'    => 'sometimes|numeric',
+            'longitude'   => 'sometimes|numeric',
+            'address'     => 'nullable|string',
+            'city'        => 'nullable|string',
+            'district'    => 'nullable|string',
+            'category_id' => 'sometimes|exists:categories,id',
+        ]);
 
-        if (!$complain) {
-            return response()->json([
-                'message' => 'Complain not found'
-            ], 404);
-        }
-
-        // Mengupdate gambar jika ada
         if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
             if ($complain->image) {
-                \Storage::delete('public/' . $complain->image);
+                Storage::disk('public')->delete($complain->image);
             }
-
-            // Simpan gambar baru
-            $imagePath = $request->file('image')->store('complains', 'public');
-            $complain->image = $imagePath;
+            $validated['image'] = $request->file('image')->store('complains', 'public');
         }
 
-        // Update aduan dengan data baru
         $complain->update($validated);
 
         return response()->json([
-            'message' => 'Complain updated successfully',
-            'complain' => $complain
-        ], 200);
+            'message' => 'Aduan berhasil diperbarui',
+            'data' => $complain,
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
-    {
-        // Cari aduan berdasarkan ID
-        $complain = Complain::find($id);
+{
+    $complain = Complain::where('id', $id)
+        ->where('user_id', auth()->id()) // hanya aduan milik user login
+        ->firstOrFail();
 
-        if (!$complain) {
-            return response()->json([
-                'message' => 'Complain not found'
-            ], 404);
-        }
-
-        // Hapus gambar jika ada
-        if ($complain->image) {
-            \Storage::delete('public/' . $complain->image);
-        }
-
-        // Hapus aduan
-        $complain->delete();
-
-        return response()->json([
-            'message' => 'Complain deleted successfully'
-        ], 200);
+    // Hapus gambar jika ada
+    if ($complain->image) {
+        Storage::disk('public')->delete($complain->image);
     }
+
+    $complain->delete();
+
+    return response()->json([
+        'message' => 'Aduan berhasil dihapus',
+    ]);
+}
+
 }

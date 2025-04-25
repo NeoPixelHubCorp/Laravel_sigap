@@ -21,6 +21,8 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
+    protected static ?string $navigationGroup = 'Manajemen Pengguna';
+
 public static function form(Form $form): Form
 {
     return $form
@@ -144,7 +146,6 @@ public static function form(Form $form): Form
             // Kolom gambar profil
             Tables\Columns\ImageColumn::make('profile_photo')
                 ->label('Foto Profil')
-                ->url(fn ($record) => Storage::disk('public')->url('profile-photos/' . $record->profile_photo)) // Perbaiki path
                 ->height(50), // Sesuaikan ukuran gambar
 
         ])

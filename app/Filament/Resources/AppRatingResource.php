@@ -1,58 +1,28 @@
 <?php
-
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AppRatingResource\Pages;
 use App\Models\AppRating;
-use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Str; // Import Str untuk manipulasi string
 
 class AppRatingResource extends Resource
 {
     protected static ?string $model = AppRating::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-star';
+    protected static ?string $navigationGroup = 'Feedback & Penilaian';
 
     public static function form(Form $form): Form
     {
-        return $form->schema([
-            Forms\Components\Section::make('Informasi Rating Aplikasi')
-                ->description('Silakan isi rating dan feedback dari pengguna aplikasi.')
-                ->schema([
-                    // Otomatis ambil user yang login
-                    Forms\Components\Hidden::make('user_id')
-                        ->default(fn () => Filament::auth()->user()->id),
-
-                    Forms\Components\Grid::make(2)->schema([
-                        Forms\Components\Select::make('app_rating')
-                            ->label('Rating')
-                            ->options([
-                                1 => '⭐️ Sangat Buruk',
-                                2 => '⭐️⭐️ Buruk',
-                                3 => '⭐️⭐️⭐️ Cukup',
-                                4 => '⭐️⭐️⭐️⭐️ Bagus',
-                                5 => '⭐️⭐️⭐️⭐️⭐️ Sangat Bagus',
-                            ])
-                            ->required(),
-
-                        Forms\Components\TextInput::make('version')
-                            ->label('Versi Aplikasi')
-                            ->maxLength(20),
-                    ]),
-
-                    Forms\Components\Textarea::make('app_feedback')
-                        ->label('Feedback')
-                        ->rows(5)
-                        ->maxLength(1000)
-                        ->columnSpanFull(),
-                ])
-                ->columns(1)
-                ->collapsible(),
-        ]);
+        return $form
+            ->schema([
+                // Tidak perlu form untuk admin, karena hanya melihat data
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -61,60 +31,50 @@ class AppRatingResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('User')
-                    ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('app_rating')
                     ->label('Rating')
-                    ->formatStateUsing(fn ($state) => str_repeat('⭐️', $state))
                     ->sortable(),
 
+                // Batasi panjang feedback dan tambahkan tooltip untuk melihat seluruh feedback
                 Tables\Columns\TextColumn::make('app_feedback')
                     ->label('Feedback')
-                    ->limit(30)
-                    ->toggleable(),
-
-                Tables\Columns\TextColumn::make('version')
-                    ->label('Versi'),
+                    ->formatStateUsing(function ($state) {
+                        // Potong feedback yang terlalu panjang
+                        return Str::limit($state, 50); // Batas panjang feedback yang ditampilkan
+                    })
+                    ->tooltip(function ($state) {
+                        // Menampilkan seluruh feedback dalam tooltip saat kursor diarahkan
+                        return $state;
+                    }),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Tanggal')
-                    ->dateTime('d M Y H:i')
-                    ->sortable(),
+                    ->label('Dibuat')
+                    ->dateTime('d M Y H:i'),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('app_rating')
-                    ->options([
-                        1 => '⭐️ 1',
-                        2 => '⭐️ 2',
-                        3 => '⭐️ 3',
-                        4 => '⭐️ 4',
-                        5 => '⭐️ 5',
-                    ])
-                    ->label('Filter Rating'),
+                // Filter jika diperlukan
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                // Tidak perlu aksi karena hanya view
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tidak perlu bulk actions karena hanya view
             ]);
     }
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            //
+        ];
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListAppRatings::route('/'),
-            'create' => Pages\CreateAppRating::route('/create'),
-            'edit' => Pages\EditAppRating::route('/{record}/edit'),
         ];
     }
 }

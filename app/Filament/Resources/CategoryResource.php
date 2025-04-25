@@ -18,21 +18,17 @@ class CategoryResource extends Resource
     protected static ?string $model = Category::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
+    protected static ?string $navigationGroup = 'Master Data';
+
 
 public static function form(Form $form): Form
 {
     return $form
         ->schema([
-            Forms\Components\TextInput::make('category')
-                ->label('Category Name')
+            Forms\Components\TextInput::make('name')
+                ->label('Nama Kategori')
                 ->required()
                 ->maxLength(255),
-
-            Forms\Components\TextInput::make('slug')
-                ->label('Slug')
-                ->required()
-                ->maxLength(255)
-                ->disabled(), // Disable slug input karena slug sudah auto-generate
         ]);
 }
 
@@ -40,15 +36,13 @@ public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('category')
-                    ->label('Category Name')
-                    ->sortable()
-                    ->searchable(),
-
-                Tables\Columns\TextColumn::make('slug')
-                    ->label('Slug')
-                    ->sortable()
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('name')
+                ->label('Nama Kategori')
+                ->searchable()
+                ->sortable(),
+            Tables\Columns\TextColumn::make('created_at')
+                ->label('Dibuat')
+                ->dateTime('d M Y H:i'),
             ])
             ->filters([
                 // Filters can be added here if needed

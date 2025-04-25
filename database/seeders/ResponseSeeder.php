@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Response;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -13,34 +14,42 @@ class ResponseSeeder extends Seeder
      */
     public function run(): void
     {
-            DB::table('responses')->insert([
+        $responses = [
             [
+                'admin_id'    => 1,
                 'complain_id' => 1,
-                'admin_id' => 1,
-                'response' => 'Lampu jalan di taman kota sudah diperbaiki, terima kasih atas laporannya.',
-                'updated_by' => 1,
-                'handled_by' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'response'    => 'Aduan telah kami verifikasi dan akan ditindaklanjuti.',
+                'updated_by'  => 1,
             ],
             [
+                'admin_id'    => 1,
+                'complain_id' => 2,
+                'response'    => 'Aduan telah kami teruskan ke instansi terkait.',
+                'updated_by'  => 1,
+            ],
+            [
+                'admin_id'    => 1,
                 'complain_id' => 3,
-                'admin_id' => 1,
-                'response' => 'Tumpukan sampah di Taman Kota telah dipindahkan dan area tersebut sudah dibersihkan. Terima kasih atas laporannya.',
-                'updated_by' => 1,
-                'handled_by' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'response'    => 'Aduan sedang dalam penanganan petugas di lapangan.',
+                'updated_by'  => 1,
             ],
             [
+                'admin_id'    => 1,
                 'complain_id' => 4,
-                'admin_id' => 1,
-                'response' => 'Pembersihan sampah di tepi Sungai Cisadane telah selesai sepenuhnya pada tanggal 18 April 2025. Kami juga telah menambahkan papan larangan buang sampah di lokasi tersebut..',
-                'updated_by' => 1,
-                'handled_by' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'response'    => 'Permasalahan telah diselesaikan. Terima kasih atas laporannya.',
+                'updated_by'  => 1,
             ],
-        ]);
+            [
+                'admin_id'    => 1,
+                'complain_id' => 5,
+                'response'    => 'Mohon maaf, aduan tidak dapat diproses karena kurangnya bukti yang mendukung.',
+                'updated_by'  => 1,
+            ],
+        ];
+
+        foreach ($responses as $response) {
+            Response::create($response);
+        }
     }
+
 }

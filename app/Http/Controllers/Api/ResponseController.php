@@ -14,8 +14,7 @@ class ResponseController extends Controller
      */
     public function index()
     {
-        $responses = Response::with(['complain', 'admin', 'updatedBy', 'handledBy'])->get();
-        return response()->json($responses);
+        
     }
 
     /**
@@ -23,27 +22,7 @@ class ResponseController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'complain_id' => 'required|exists:complains,id',
-            'admin_id' => 'required|exists:users,id',
-            'response' => 'nullable|string',
-            'updated_by' => 'nullable|exists:users,id',
-            'handled_by' => 'nullable|exists:users,id',
-        ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validasi gagal.',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        $response = Response::create($request->all());
-
-        return response()->json([
-            'message' => 'Respon berhasil dibuat.',
-            'data' => $response,
-        ], 201);
     }
 
     /**
@@ -51,13 +30,7 @@ class ResponseController extends Controller
      */
     public function show(string $id)
     {
-        $response = Response::with(['complain', 'admin', 'updatedBy', 'handledBy'])->find($id);
 
-        if (!$response) {
-            return response()->json(['message' => 'Respon tidak ditemukan.'], 404);
-        }
-
-        return response()->json($response);
     }
 
     /**
@@ -65,33 +38,7 @@ class ResponseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $response = Response::find($id);
 
-        if (!$response) {
-            return response()->json(['message' => 'Respon tidak ditemukan.'], 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'complain_id' => 'sometimes|exists:complains,id',
-            'admin_id' => 'sometimes|exists:users,id',
-            'response' => 'nullable|string',
-            'updated_by' => 'nullable|exists:users,id',
-            'handled_by' => 'nullable|exists:users,id',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validasi gagal.',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        $response->update($request->all());
-
-        return response()->json([
-            'message' => 'Respon berhasil diperbarui.',
-            'data' => $response,
-        ]);
     }
 
     /**
@@ -99,14 +46,34 @@ class ResponseController extends Controller
      */
     public function destroy(string $id)
     {
-        $response = Response::find($id);
 
-        if (!$response) {
-            return response()->json(['message' => 'Respon tidak ditemukan.'], 404);
-        }
-
-        $response->delete();
-
-        return response()->json(['message' => 'Respon berhasil dihapus.']);
     }
+
+    public function getResponseByComplain($complainId)
+{
+    $response = Response::with(['admin:id,name', 'updatedBy:id,name'])
+        ->where('complain_id', $complainId)
+        ->whereHas('complain', function ($query) {
+            $query->where('user_id', auth()->id());
+        })
+        ->first();
+
+    if (!$response) {
+        return response()->json([
+            'message' => 'Respon belum tersedia atau aduan tidak ditemukan.',
+        ], 404);
+    }
+
+    return response()->json([
+        'message' => 'Respon ditemukan.',
+        'data' => [
+            'response'     => $response->response,
+            'admin_name'   => $response->admin->name ?? 'Admin',
+            'updated_by'   => $response->updatedBy->name ?? null,
+            'created_at'   => $response->created_at->toDateTimeString(),
+            'updated_at'   => $response->updated_at->toDateTimeString(),
+        ],
+    ]);
+}
+
 }

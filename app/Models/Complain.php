@@ -5,32 +5,34 @@ use Illuminate\Database\Eloquent\Model;
 
 class Complain extends Model
 {
-    protected $table = 'complains'; // Nama tabel
-
     protected $fillable = [
-        'user_id',        // Relasi ke tabel users (pelapor)
-        'category_id',    // Relasi ke kategori aduan
-        'no_aduan',       // Nomor aduan
-        'title',          // Judul aduan
-        'description',    // Deskripsi aduan
-        'image',          // Gambar (opsional)
-        'location',       // Lokasi aduan
-        'status',         // Status aduan
-        'visibility',     // Visibilitas aduan
-        'tanggal_aduan',  // Tanggal aduan (opsional)
+        'user_id',
+        'category_id',
+        'no_aduan',
+        'title',
+        'description',
+        'image',
+        'latitude',
+        'longitude',
+        'address',
+        'city',
+        'district',
+        'status',
     ];
 
-    // Relasi ke tabel users (pelapor)
+    // Relasi ke User
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
-    // Relasi ke tabel category_reports (kategori aduan)
+    // Relasi ke Category
     public function category()
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsTo(Category::class);
     }
+
+    // Relasi ke Rating jika ada
 
     // Boot method untuk menangani event saat menyimpan
     protected static function boot()
