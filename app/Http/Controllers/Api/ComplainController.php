@@ -68,7 +68,7 @@ public function update(Request $request, $id)
     {
         $complain = Complain::where('id', $id)
             ->where('user_id', auth()->id())
-            ->firstOrFail();
+            ->firstOrFail();   
 
         $validated = $request->validate([
             'title'       => 'sometimes|string|max:255',

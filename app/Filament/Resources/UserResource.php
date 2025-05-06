@@ -36,11 +36,6 @@ public static function form(Form $form): Form
                                 ->required()
                                 ->maxLength(255),
 
-                            Forms\Components\TextInput::make('username')
-                                ->label('Username')
-                                ->nullable()
-                                ->maxLength(255),
-
                             Forms\Components\TextInput::make('email')
                                 ->label('Email')
                                 ->required()
@@ -100,6 +95,7 @@ public static function form(Form $form): Form
                     ->label('Foto Profil')
                     ->directory('profile-photos')
                     ->image()
+                    ->disk('public')
                     ->imageEditor()
                     ->previewable()
                     ->nullable()
@@ -121,10 +117,6 @@ public static function form(Form $form): Form
                 ->sortable(),
 
             // Kolom username pengguna
-            Tables\Columns\TextColumn::make('username')
-                ->label('Username')
-                ->searchable()
-                ->sortable(),
 
             // Kolom email pengguna
             Tables\Columns\TextColumn::make('email')
@@ -146,6 +138,7 @@ public static function form(Form $form): Form
             // Kolom gambar profil
             Tables\Columns\ImageColumn::make('profile_photo')
                 ->label('Foto Profil')
+                ->disk('public')
                 ->height(50), // Sesuaikan ukuran gambar
 
         ])

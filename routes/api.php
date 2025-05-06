@@ -20,7 +20,6 @@ Route::post('login', [AuthController::class, 'login']);  // Login
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     //bagian fitur
-    Route::post('/app-rating', [AppRatingController::class, 'store']); //rating tambah
     Route::apiResource('/complains',ComplainController::class); //aduan CRUD
     Route::put('/profile', [UserController::class, 'update']); //profile U
     Route::get('/profile', [UserController::class, 'profile']); //profile U

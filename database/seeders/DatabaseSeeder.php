@@ -24,7 +24,6 @@ class DatabaseSeeder extends Seeder
         CategorySeeder::class,
         ComplainSeeder::class,
         ResponseSeeder::class,
-        AppRatingSeeder::class,
         ]);
     }
 }

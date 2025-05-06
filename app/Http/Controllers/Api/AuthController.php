@@ -76,7 +76,7 @@ class AuthController extends Controller
     /**
      * Get authenticated user profile
      */
-    
+
 
     /**
      * Logout and revoke the user's token
